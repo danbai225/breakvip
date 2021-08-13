@@ -70,7 +70,7 @@
                     },
                 })
                 window.dp = dp;
-                var key = window.btoa(window.url);
+                var key = window.btoa(window.location.href);
                 var time = getCache(key);
                 if (time != null) {
                     window.dp.seek(time);
