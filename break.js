@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         布雷克影院跳过支付
 // @namespace    https://p00q.cn
-// @version      0.3
+// @version      0.4
 // @description  该脚本用于跳过布雷克影院（http://www.breakvip.com）观影支付环节。
 // @author       DanBai
 // @match        http://www.breakvip.com/*
@@ -46,27 +46,18 @@
         var httpRequest = new XMLHttpRequest();
         httpRequest.open("GET", window.location.href, true);
         httpRequest.send();
-        var pattern = /http.*m3u8/;
+        var pattern = /http.*(m3u8|mp4)/;
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState == 4 && httpRequest.status == 200) {
                 var dp = new DPlayer({
                     element: document.getElementById("dplayer"),
                     autoplay: true,
                     preload: "auto",
-                    theme: "#00b2c2",
                     loop: false,
                     screenshot: false,
                     hotkey: true,
                     video: {
                         url: pattern.exec(httpRequest.responseText)[0],
-                        type: "hls",
-                        customType: {
-                            hls: function (video, player) {
-                                const hls = new Hls();
-                                hls.loadSource(video.src);
-                                hls.attachMedia(video);
-                            },
-                        }
                     },
                 })
                 window.dp = dp;
@@ -76,6 +67,7 @@
                     window.dp.seek(time);
                     window.dp.play();
                 }
+                $(".dplayer").css("width","80%");
                 window.setInterval(function () {
                     if (window.dp.video.currentTime > 10) {
                         setCache(key, window.dp.video.currentTime);
